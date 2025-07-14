@@ -181,8 +181,8 @@ export const outfitRecommendations = {
       { id: 12, name: "Cashmere Sweater", price: 9999, reason: "Cozy and stylish" }
     ]
   },
-  3: { // Red Floral Dress
-    pinterestLink: "https://www.pinterest.com/pin/summer-floral-dress-styling--456789123/",
+  3: { // White Floral Dress
+    pinterestLink: "https://www.pinterest.com/pin/visit-for-more-in-2025--16607092371533702/",
     outfitName: "Summer Romance",
     recommendedItems: [
       { id: 8, name: "Vintage Sunglasses", price: 2499, reason: "Perfect summer accessory" },
@@ -192,7 +192,7 @@ export const outfitRecommendations = {
     ]
   },
   4: { // Black Leather Jacket
-    pinterestLink: "https://www.pinterest.com/pin/edgy-leather-jacket-outfits--789123456/",
+    pinterestLink: "https://www.pinterest.com/pin/55450639150365002/",
     outfitName: "Edgy Street Style",
     recommendedItems: [
       { id: 2, name: "Denim Blue Jeans", price: 3999, reason: "Classic rock combination" },
