@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, ShoppingBag, Search, Menu, X, ChevronDown, Crown, Star, Sparkles, User } from 'lucide-react';
+import { products as importedProducts, outfitRecommendations } from './data/products';
 
 // Mock data for demonstration
 const categories = [
@@ -39,37 +40,17 @@ const categories = [
   }
 ];
 
-const products = [
-  {
-    id: 1,
-    name: 'Elegant Summer Dress',
-    price: 89.99,
-    image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=600&fit=crop',
-    category: 'Women',
-    rating: 4.5,
-    isNew: true
-  },
-  {
-    id: 2,
-    name: 'Classic Oxford Shirt',
-    price: 65.00,
-    image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=600&fit=crop',
-    category: 'Men',
-    rating: 4.8,
-    isNew: false
-  },
-  {
-    id: 3,
-    name: 'Leather Handbag',
-    price: 125.00,
-    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=600&fit=crop',
-    category: 'Accessories',
-    rating: 4.6,
-    isNew: true
-  }
-];
-
-const outfitRecommendations = {};
+// Add missing properties to imported products
+const products = importedProducts.map(product => ({
+  ...product,
+  price: typeof product.price === 'number' ? product.price / 100 : 89.99, // Convert from cents to dollars
+  rating: product.rating || (Math.random() * 2 + 3).toFixed(1), // Random rating between 3-5
+  isNew: product.isNew !== undefined ? product.isNew : Math.random() > 0.5, // Random isNew if not defined
+  image: product.image.replace('w=300&h=400', 'w=400&h=600'), // Update image dimensions
+  category: product.category === 'Shirts' || product.category === 'Blazers' || product.category === 'Jackets' ? 'Men' :
+           product.category === 'Dresses' || product.category === 'Tops' || product.category === 'Skirts' || product.category === 'Jeans' ? 'Women' :
+           'Accessories'
+}));
 
 function ProductCard({ product, onAddToWishlist, onGetOutfitIdeas, isInWishlist }) {
   return (
@@ -176,6 +157,35 @@ function WishlistModal({ wishlist, onClose, onRemove, onSelectProduct }) {
 }
 
 function OutfitRecommendations({ product, recommendations, onClose }) {
+  // If no recommendations found, show a placeholder
+  if (!recommendations) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-800">Style Ideas for {product.name}</h2>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-6">
+            <div className="text-center py-8">
+              <Sparkles className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg">Outfit recommendations coming soon!</p>
+              <p className="text-gray-400 text-sm mt-2">We're working on personalized styling suggestions for this item.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[80vh] overflow-y-auto">
@@ -192,10 +202,70 @@ function OutfitRecommendations({ product, recommendations, onClose }) {
         </div>
         
         <div className="p-6">
-          <p className="text-gray-600 mb-4">Here are some styling suggestions for your selected item:</p>
-          <div className="bg-gray-50 rounded-xl p-6 text-center">
-            <Sparkles className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">Outfit recommendations coming soon!</p>
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            {/* Selected Product */}
+            <div className="bg-gray-50 rounded-xl p-4">
+              <h3 className="text-lg font-semibold mb-3 text-gray-900">Selected Item</h3>
+              <div className="flex items-center space-x-4">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+                <div>
+                  <h4 className="font-semibold text-gray-900">{product.name}</h4>
+                  <p className="text-gray-600 text-sm">{product.brand}</p>
+                  <p className="text-purple-600 font-bold">${product.price}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Pinterest Inspiration */}
+            <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl p-4">
+              <h3 className="text-lg font-semibold mb-3 text-gray-900 flex items-center">
+                <Sparkles className="w-5 h-5 mr-2 text-red-500" />
+                Pinterest Inspiration
+              </h3>
+              <div className="bg-white rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">{recommendations.outfitName}</h4>
+                <p className="text-gray-600 text-sm mb-3">
+                  Get styling inspiration from this curated Pinterest board
+                </p>
+                <a
+                  href={recommendations.pinterestLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>View on Pinterest</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Recommended Items */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">Complete the Look</h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recommendations.recommendedItems.map((item, index) => (
+                <div key={index} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start space-x-3 mb-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center">
+                      <ShoppingBag className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900">{item.name}</h4>
+                      <p className="text-purple-600 font-bold">${(item.price / 100).toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-3">{item.reason}</p>
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 text-sm font-medium">
+                    Add to Cart
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
