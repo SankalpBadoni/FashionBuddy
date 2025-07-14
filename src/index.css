@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* Prevent horizontal scrolling */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Ensure all containers are properly sized */
+* {
+  box-sizing: border-box;
+}
+
+/* Add line clamp utility for text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
