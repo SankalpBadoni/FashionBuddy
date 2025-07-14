@@ -19,12 +19,12 @@ export const products = [
   },
   {
     id: 3,
-    name: "Red Floral Dress",
+    name: "White Floral Dress",
     price: 4999,
     image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300&h=400&fit=crop",
     category: "Dresses",
     brand: "FloralFashion",
-    description: "Beautiful red floral dress for special occasions"
+    description: "Beautiful white floral dress for special occasions"
   },
   {
     id: 4,
